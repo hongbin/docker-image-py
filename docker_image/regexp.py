@@ -1,15 +1,15 @@
-import regex
+import re
 
 
 def _quote_meta(s):
-    special_chars = regex._METACHARS
+    special_chars = frozenset("()[]{}?*+|^$\\.-#&~")
     escape = lambda c: r'\{}'.format(c) if c in special_chars else c
     sp = (escape(c) for c in s)
     return r''.join(sp)
 
 
 def match(regexp):
-    return regex.compile(regexp)
+    return re.compile(regexp)
 
 
 def literal(s):
@@ -55,7 +55,7 @@ class ImageRegexps(object):
     )
     TAG_REGEXP = match(r'[\w][\w.-]{0,127}')
     ANCHORED_TAG_REGEXP = anchored(TAG_REGEXP)
-    DIGEST_REGEXP = match(r'[A-Za-z][A-Za-z0-9]*(?:[-_+.][A-Za-z][A-Za-z0-9]*)*[:][[:xdigit:]]{32,}')
+    DIGEST_REGEXP = match(r'[a-zA-Z0-9-_+.]+:[a-fA-F0-9]+')
     ANCHORED_DIGEST_REGEXP = anchored(DIGEST_REGEXP)
     NAME_REGEXP = expression(
         optional(HOSTNAME_REGEXP, literal(r'/')),
